@@ -7,12 +7,10 @@ import numpy
 
 from nets import nn
 from utils import util
-
 filterwarnings("ignore")
 
-detection = nn.Detection('./weights/detection.onnx')
-recognition = nn.Recognition('./weights/recognition.onnx')
-classification = nn.Classification('./weights/classification.onnx')
+detection = nn.Detection('/home/saika/skkmigas/ocr/paddle-onnx/models/PP-OCRv5_mobile_det_infer.onnx')
+recognition = nn.Recognition('/home/saika/skkmigas/ocr/paddle-onnx/models/en_PP-OCRv4_mobile_rec_infer.onnx')
 
 
 def main():
@@ -37,7 +35,6 @@ def main():
                       (0, 255, 0), 2)
 
     cropped_images = [util.crop_image(frame, x) for x in points]
-    cropped_images, angles = classification(cropped_images)
     results, confidences = recognition(cropped_images)
 
     # draw recognized text
@@ -48,7 +45,8 @@ def main():
                             0.4, (200, 200, 0), 1, cv2.LINE_AA)
     cv2.imwrite(os.path.basename(args.filepath), image)
 
-    print(results)
+    for result in results:
+        print(result + "\n")
 
 
 if __name__ == '__main__':
